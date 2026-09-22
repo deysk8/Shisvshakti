@@ -1,0 +1,9 @@
+www.shivshaktibuses.com, shivshaktibuses.com {
+	encode gzip
+	reverse_proxy web:3000
+}
+
+api.shivshaktibuses.com {
+	encode gzip
+	reverse_proxy api:4000
+}

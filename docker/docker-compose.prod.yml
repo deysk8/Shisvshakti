@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-shivasakti}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shivasakti_dev_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-shivasakti}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-shivasakti}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/api.Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ../apps/api/.env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-shivasakti}:${POSTGRES_PASSWORD:-shivasakti_dev_change_me}@postgres:5432/${POSTGRES_DB:-shivasakti}?schema=public
+      NODE_ENV: production
+      PORT: 4000
+    expose:
+      - '4000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ..
+      dockerfile: docker/web.Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.shivshaktibuses.com/api/v1}
+        NEXT_PUBLIC_CASHFREE_ENV: ${NEXT_PUBLIC_CASHFREE_ENV:-production}
+    restart: unless-stopped
+    expose:
+      - '3000'
+    depends_on:
+      - api
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      ACME_AGREE: 'true'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+      - api
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:

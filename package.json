@@ -1,0 +1,29 @@
+{
+  "name": "shiva-sakti",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shiva Sakti — bus travel booking & management platform",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "echo Run dev:api and dev:web in separate terminals",
+    "dev:api": "npm run dev --workspace=@shiva-sakti/api",
+    "dev:web": "npm run dev --workspace=@shiva-sakti/web",
+    "clean:web": "powershell -ExecutionPolicy Bypass -File scripts/clean-dev-caches.ps1",
+    "build": "npm run build --workspaces --if-present",
+    "build:shared": "npm run build --workspace=@shiva-sakti/shared",
+    "build:api": "npm run build:shared && npm run build --workspace=@shiva-sakti/api",
+    "build:web": "npm run build:shared && npm run build --workspace=@shiva-sakti/web",
+    "db:up": "docker compose -f docker/docker-compose.yml up -d",
+    "db:down": "docker compose -f docker/docker-compose.yml down",
+    "db:migrate": "npm run prisma:migrate --workspace=@shiva-sakti/api",
+    "db:seed": "npm run prisma:seed --workspace=@shiva-sakti/api",
+    "go-live:seed": "npm run db:seed",
+    "db:studio": "npm run prisma:studio --workspace=@shiva-sakti/api"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #e8740c;
+  --brand-deep: #c45a00;
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .stagger-item,
+  .hero-enter,
+  .list-enter-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white shadow-sm transition-[transform,background-color,box-shadow] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
+  }
+
+  @media (hover: hover) {
+    .btn-primary:hover {
+      @apply -translate-y-0.5 bg-brand-deep shadow-md;
+    }
+
+    .btn-primary:active {
+      @apply translate-y-0 scale-[0.98];
+    }
+  }
+
+  .card {
+    @apply rounded-xl border border-gray-100 bg-white p-6 shadow-card;
+  }
+
+  @media (hover: hover) {
+    .card {
+      @apply transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-0.5 hover:shadow-lg;
+    }
+  }
+
+  .nav-link {
+    @apply relative transition-colors duration-200 hover:text-brand;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute -bottom-1 left-0 h-0.5 w-0 rounded-full bg-brand transition-[width] duration-300 ease-out;
+  }
+
+  @media (hover: hover) {
+    .nav-link:hover::after {
+      @apply w-full;
+    }
+  }
+
+  .shimmer-block {
+    @apply rounded-lg bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100;
+    background-size: 200% 100%;
+    animation: shimmer-slide 2.5s linear infinite;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+    transition:
+      opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    will-change: auto;
+  }
+
+  .stagger-item {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+    transition:
+      opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .stagger-grid.is-visible .stagger-item {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .stagger-grid.is-visible .stagger-item:nth-child(1) {
+    transition-delay: 0.04s;
+  }
+  .stagger-grid.is-visible .stagger-item:nth-child(2) {
+    transition-delay: 0.08s;
+  }
+  .stagger-grid.is-visible .stagger-item:nth-child(3) {
+    transition-delay: 0.12s;
+  }
+  .stagger-grid.is-visible .stagger-item:nth-child(4) {
+    transition-delay: 0.16s;
+  }
+  .stagger-grid.is-visible .stagger-item:nth-child(5) {
+    transition-delay: 0.2s;
+  }
+  .stagger-grid.is-visible .stagger-item:nth-child(6) {
+    transition-delay: 0.24s;
+  }
+  .stagger-grid.is-visible .stagger-item:nth-child(7) {
+    transition-delay: 0.28s;
+  }
+  .stagger-grid.is-visible .stagger-item:nth-child(8) {
+    transition-delay: 0.32s;
+  }
+
+  .hero-enter {
+    animation: hero-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .list-enter-item {
+    animation: list-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .list-enter .list-enter-item:nth-child(1) {
+    animation-delay: 0.02s;
+  }
+  .list-enter .list-enter-item:nth-child(2) {
+    animation-delay: 0.06s;
+  }
+  .list-enter .list-enter-item:nth-child(3) {
+    animation-delay: 0.1s;
+  }
+  .list-enter .list-enter-item:nth-child(4) {
+    animation-delay: 0.14s;
+  }
+  .list-enter .list-enter-item:nth-child(5) {
+    animation-delay: 0.18s;
+  }
+  .list-enter .list-enter-item:nth-child(6) {
+    animation-delay: 0.22s;
+  }
+  .list-enter .list-enter-item:nth-child(7) {
+    animation-delay: 0.26s;
+  }
+  .list-enter .list-enter-item:nth-child(8) {
+    animation-delay: 0.3s;
+  }
+}
+
+@keyframes shimmer-slide {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes list-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}

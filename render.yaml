@@ -1,0 +1,77 @@
+# Render Blueprint — API + PostgreSQL
+# Dashboard: New → Blueprint → connect GitHub repo with this file
+
+databases:
+  - name: shivasakti-db
+    plan: free
+    region: singapore
+    databaseName: shivasakti
+    user: shivasakti
+
+services:
+  - type: web
+    name: shivasakti-api
+    runtime: node
+    plan: free
+    region: singapore
+    rootDir: .
+    buildCommand: >-
+      npm ci &&
+      npm run build --workspace=@shiva-sakti/shared &&
+      npm run build --workspace=@shiva-sakti/api &&
+      cd apps/api &&
+      npx prisma db push &&
+      npx prisma db seed
+    startCommand: cd apps/api && node dist/main.js
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "20"
+      - key: PORT
+        value: "4000"
+      - key: API_PREFIX
+        value: api/v1
+      - key: DATABASE_URL
+        fromDatabase:
+          name: shivasakti-db
+          property: connectionString
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: GPS_INGEST_SECRET
+        generateValue: true
+      - key: PARTNER_WEBHOOK_HMAC_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: APP_PUBLIC_URL
+        sync: false
+      - key: API_PUBLIC_URL
+        sync: false
+      - key: PROD_ADMIN_EMAIL
+        sync: false
+      - key: PROD_ADMIN_PASSWORD
+        sync: false
+      - key: CASHFREE_APP_ID
+        sync: false
+      - key: CASHFREE_SECRET_KEY
+        sync: false
+      - key: CASHFREE_ENV
+        value: production
+      - key: CASHFREE_WEBHOOK_SECRET
+        sync: false
+      - key: EMAIL_PROVIDER
+        value: resend
+      - key: EMAIL_FROM
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: STORAGE_PROVIDER
+        value: local
+      - key: STORAGE_LOCAL_PATH
+        value: ./storage
+      - key: SEED_DEV_USERS
+        value: "false"
